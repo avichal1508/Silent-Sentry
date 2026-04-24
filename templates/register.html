@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account – Silent Sentry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-deep:        #020617;
+      --bg-surface:     #0f172a;
+      --accent-main:    #38bdf8;
+      --white:          #f8fafc;
+      --text-dim:       #94a3b8;
+      --border:         rgba(56, 189, 248, 0.15);
+      --font-display:   'Outfit', sans-serif;
+      --font-body:      'Inter', sans-serif;
+    }
+    body { font-family: var(--font-body); background: var(--bg-deep); color: var(--white); display: flex; flex-direction: column; min-height: 100vh; }
+    .hero-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at center, rgba(56, 189, 248, 0.05) 0%, transparent 70%), var(--bg-deep); }
+    .page { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; }
+
+    nav {
+      display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 5rem;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 1000;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--font-display);
+      font-weight: 700; color: var(--white); font-size: 1.5rem; letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent-main); }
+    .logo-icon {
+      width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-main), #818cf8);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.3s; }
+    .nav-links a:hover { color: var(--accent-main); }
+    .dropdown { position: relative; }
+    .dropdown > a { display: flex; align-items: center; gap: 6px; }
+    .dropdown > a::after { content: '▼'; font-size: 0.6rem; transform: scaleY(0.6); }
+    .dropdown-content {
+      position: absolute; top: 100%; left: 0; background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 12px; min-width: 240px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s; margin-top: 15px;
+    }
+    .dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
+    .dropdown-content a { display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim) !important; transition: all 0.2s; }
+    .dropdown-content a:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main) !important; }
+
+    .btn-cta {
+      background: var(--accent-main); color: var(--bg-deep) !important; padding: 0.75rem 1.75rem;
+      border-radius: 50px; font-weight: 700; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+    }
+
+
+    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .auth-card {
+      width: 100%; max-width: 500px; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: 24px; padding: 48px;
+    }
+    .auth-card h2 { font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: 8px; text-align: center; }
+    .auth-card p { color: var(--text-dim); font-size: 0.95rem; text-align: center; margin-bottom: 32px; }
+
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .full-width { grid-column: span 2; }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; color: var(--text-dim); }
+    .input-group input {
+      width: 100%; padding: 14px 16px; background: rgba(2, 6, 23, 0.4); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--white); outline: none; transition: 0.2s; font-family: var(--font-body);
+    }
+    .input-group input:focus { border-color: var(--accent-main); box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1); }
+
+    .btn-submit {
+      width: 100%; padding: 14px; background: var(--accent-main); color: var(--bg-deep);
+      border: none; border-radius: 12px; font-weight: 700; font-family: var(--font-display); font-size: 1rem;
+      cursor: pointer; transition: 0.2s; margin-top: 10px;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
+
+    .footer-links { margin-top: 32px; text-align: center; font-size: 0.9rem; color: var(--text-dim); }
+    .footer-links a { color: var(--accent-main); text-decoration: none; font-weight: 600; }
+
+    .flash-box { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 24px; text-align: center; }
+
+    @media (max-width: 640px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .auth-card { padding: 32px 24px; }
+      .input-grid { grid-template-columns: 1fr; }
+      .full-width { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-bg"></div>
+  <div class="page">
+    <nav>
+      <a href="/" class="logo">
+        <div class="logo-icon">🛡</div>
+        Silent<span>Sentry</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li class="dropdown">
+          <a href="javascript:void(0)">Dashboards</a>
+          <div class="dropdown-content">
+            <a href="/Attack_Frequency_Severity">Attack Frequency & Severity</a>
+            <a href="/Sequential_Escalation">Sequential Escalation</a>
+            <a href="/Payload_Analysis_Page">Payload Analysis</a>
+            <a href="/Threat_Score_Page">Threat Score analysis</a>
+          </div>
+        </li>
+        {% if session.user_id %}
+          <li><a href="/logout">Logout</a></li>
+        {% endif %}
+        <li><a href="/login">Sign In</a></li>
+        <li><a href="/register" class="btn-cta">Sign Up</a></li>
+      </ul>
+    </nav>
+
+
+    <main class="main">
+      <div class="auth-card">
+        <h2>Initiate Protection</h2>
+        <p>Deploy your personal security node today</p>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="flash-box">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/register" method="POST">
+          <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="John Doe" required>
+          </div>
+          <div class="input-group">
+            <label>Work Email</label>
+            <input type="email" name="email" placeholder="name@company.com" required>
+          </div>
+          <div class="input-grid">
+            <div class="input-group">
+              <label>Password</label>
+              <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <div class="input-group">
+              <label>Confirm Password</label>
+              <input type="password" name="confirm_password" placeholder="••••••••" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Deploy Node →</button>
+        </form>
+
+        <div class="footer-links">
+          Already protected? <a href="/login">Sign in</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

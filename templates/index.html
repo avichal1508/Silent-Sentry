@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Silent Sentry – Enterprise Cyber Protection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-deep:        #020617;
+      --bg-surface:     #0f172a;
+      --bg-card:        #1e293b;
+      --accent-main:    #38bdf8;
+      --accent-glow:    #0ea5e9;
+      --accent-indigo:  #818cf8;
+      --white:          #f8fafc;
+      --text-dim:       #94a3b8;
+      --border:         rgba(56, 189, 248, 0.15);
+      --font-display:   'Outfit', sans-serif;
+      --font-body:      'Inter', sans-serif;
+      --glass:          rgba(15, 23, 42, 0.85);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-deep);
+      color: var(--white);
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ──── MODERN BACKGROUND ──── */
+    .hero-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(129, 140, 248, 0.08) 0%, transparent 50%),
+        var(--bg-deep);
+    }
+    .grid-pattern {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.2;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      mask-image: radial-gradient(circle, black, transparent 80%);
+    }
+
+    .page { position: relative; z-index: 10; }
+
+    /* ──── NAVBAR ──── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 5rem;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent-main); }
+    
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .nav-links a:hover { color: var(--accent-main); }
+    
+    /* Dropdown Fix & Professionalism */
+    .dropdown { position: relative; }
+    .dropdown > a { display: flex; align-items: center; gap: 6px; }
+    .dropdown > a::after { content: '▼'; font-size: 0.6rem; transform: scaleY(0.6); }
+
+    .dropdown-content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      min-width: 240px;
+      padding: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top: 15px;
+    }
+
+    .dropdown:hover .dropdown-content {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--text-dim) !important;
+      transition: all 0.2s;
+    }
+    .dropdown-content a:hover {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-main) !important;
+      padding-left: 20px;
+    }
+
+    .btn-cta {
+      background: var(--accent-main);
+      color: var(--bg-deep) !important;
+      padding: 0.75rem 1.75rem;
+      border-radius: 50px;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+    }
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+      background: var(--white);
+    }
+
+    /* ──── HERO ──── */
+    .hero {
+      padding: 100px 5rem 60px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: center;
+      gap: 60px;
+    }
+    .hero-content h1 {
+      font-family: var(--font-display);
+      font-size: 4.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -2px;
+    }
+    .hero-content h1 span {
+      background: linear-gradient(to right, var(--accent-main), var(--accent-indigo));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-content p {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+      max-width: 540px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 50px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-box { display: flex; flex-direction: column; gap: 4px; }
+    .stat-box .val { font-size: 1.75rem; font-weight: 700; font-family: var(--font-display); color: var(--accent-main); }
+    .stat-box .lbl { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+
+    /* ──── DASHBOARD PREVIEW CARDS ──── */
+    .hero-visual {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .visual-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      height: 480px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      display: flex; flex-direction: column; gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .visual-header { display: flex; justify-content: space-between; align-items: center; }
+    .dot-row { display: flex; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+    .dot:nth-child(1) { background: #ef4444; }
+    .dot:nth-child(2) { background: #f59e0b; }
+    .dot:nth-child(3) { background: #10b981; }
+
+    .chart-mock {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 12px;
+      position: relative;
+      border: 1px dashed var(--border);
+      display: flex; align-items: flex-end; gap: 10px; padding: 20px;
+    }
+    .bar { flex: 1; background: var(--accent-main); border-radius: 4px; transition: height 1s; animation: grow 1.5s ease-out; }
+    @keyframes grow { from { height: 0; } }
+
+    /* ──── FEATURE SECTION ──── */
+    .features {
+      padding: 100px 5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    .feature-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      transition: all 0.3s;
+    }
+    .feature-card:hover {
+      border-color: var(--accent-main);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.1);
+    }
+    .feature-card i {
+      font-size: 1.5rem; color: var(--accent-main); margin-bottom: 20px; display: block;
+    }
+    .feature-card h3 { font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 12px; }
+    .feature-card p { font-size: 0.95rem; line-height: 1.6; color: var(--text-dim); }
+
+    footer {
+      padding: 40px 5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1024px) {
+      nav { padding: 1.25rem 2.5rem; }
+      .hero { grid-template-columns: 1fr; padding: 60px 2.5rem; text-align: center; }
+      .hero-content h1 { font-size: 3rem; }
+      .hero-content p { margin: 0 auto 2.5rem; }
+      .hero-stats { justify-content: center; }
+      .features { grid-template-columns: 1fr; padding: 60px 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-bg"></div>
+  <div class="grid-pattern"></div>
+
+  <div class="page">
+    <nav>
+      <a href="/" class="logo">
+        <div class="logo-icon">🛡</div>
+        Silent<span>Sentry</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li class="dropdown">
+          <a href="javascript:void(0)">Dashboards</a>
+          <div class="dropdown-content">
+            <a href="/Attack_Frequency_Severity">Attack Frequency & Severity</a>
+            <a href="/Sequential_Escalation">Sequential Escalation</a>
+            <a href="/Payload_Analysis_Page">Payload Analysis</a>
+            <a href="/Threat_Score_Page">Threat Score analysis</a>
+          </div>
+        </li>
+        {% if session.user_id %}
+          <li><a href="/logout">Logout</a></li>
+        {% endif %}
+        <li><a href="/login">Sign In</a></li>
+        <li><a href="/register" class="btn-cta">Sign Up</a></li>
+
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Enterprise Grade <span>Threat Intelligence</span></h1>
+        <p>Advanced security analytics powered by machine learning to shield your digital infrastructure from evolving global threats. Real-time monitoring, deep payload inspection, and predictive severity scoring.</p>
+        
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="val">{{ uptime }}</span>
+            <span class="lbl">Availability</span>
+          </div>
+          <div class="stat-box">
+            <span class="val">{{ total_attacks }}</span>
+            <span class="lbl">Nodes Protected</span>
+          </div>
+          <div class="stat-box">
+            <span class="val">{{ unique_types }}</span>
+            <span class="lbl">Threat Vectors</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">LIVE_THREAT_FEED</div>
+          </div>
+          <div class="chart-mock">
+            <div class="bar" style="height: 40%;"></div>
+            <div class="bar" style="height: 70%;"></div>
+            <div class="bar" style="height: 50%;"></div>
+            <div class="bar" style="height: 90%;"></div>
+            <div class="bar" style="height: 60%;"></div>
+            <div class="bar" style="height: 30%;"></div>
+            <div class="bar" style="height: 80%;"></div>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--accent-main); font-weight: 600;">STATUS: ACTIVE PROTECTION ENABLED</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <i>🛡</i>
+        <h3>Proactive Defense</h3>
+        <p>Identify and neutralize potential threats before they penetrate your network perimeter using advanced pattern recognition.</p>
+      </div>
+      <div class="feature-card">
+        <i>📊</i>
+        <h3>Deep Analytics</h3>
+        <p>Visualize complex attack sequences and payload distributions with high-fidelity, interactive data dashboards.</p>
+      </div>
+      <div class="feature-card">
+        <i>⚡</i>
+        <h3>Smart Scoring</h3>
+        <p>Automated threat severity scoring helps your team prioritize critical incidents and response strategies effectively.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 Silent Sentry Enterprise Security. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Robust dropdown handling if needed, but current CSS is quite stable.
+    // Ensure dropdown stays open when interacting with it.
+    const dropdown = document.querySelector('.dropdown');
+    const content = document.querySelector('.dropdown-content');
+    
+    // Smooth transitions are handled by CSS, but you could add click-to-open here if mobile experience is preferred.
+  </script>
+</body>
+</html>

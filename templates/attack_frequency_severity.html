@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attack Frequency & Severity – Silent Sentry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-deep:        #020617;
+      --bg-surface:     #0f172a;
+      --bg-card:        #1e293b;
+      --accent-main:    #38bdf8;
+      --accent-indigo:  #818cf8;
+      --white:          #f8fafc;
+      --text-dim:       #94a3b8;
+      --border:         rgba(56, 189, 248, 0.15);
+      --font-display:   'Outfit', sans-serif;
+      --font-body:      'Inter', sans-serif;
+      --glass:          rgba(15, 23, 42, 0.85);
+    }
+    body { font-family: var(--font-body); background: var(--bg-deep); color: var(--white); overflow-x: hidden; min-height: 100vh; }
+    .hero-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 50%), var(--bg-deep); }
+    .grid-pattern { position: fixed; inset: 0; z-index: 1; opacity: 0.1; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; }
+    .page { position: relative; z-index: 10; padding-bottom: 60px; }
+
+    nav {
+      display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 5rem;
+      background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 1000;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--white); }
+    .logo span { color: var(--accent-main); }
+    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo)); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.3s; }
+    .nav-links a:hover { color: var(--accent-main); }
+    .dropdown { position: relative; }
+    .dropdown-content { position: absolute; top: 100%; left: 0; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; min-width: 240px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s; margin-top: 15px; }
+    .dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
+    .dropdown-content a { display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim) !important; transition: all 0.2s; }
+    .dropdown-content a:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main) !important; }
+
+    .container { padding: 40px 5rem; }
+    .header-area { margin-bottom: 40px; }
+    .header-area h1 { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; color: var(--white); }
+    .header-area p { color: var(--text-dim); font-size: 1rem; }
+
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+    .kpi-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+    .kpi-card .lbl { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .kpi-card .val { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; color: var(--accent-main); }
+
+    .graph-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+    .graph-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .graph-card h2 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 24px; color: var(--accent-main); }
+    .conclusion { margin-top: 24px; padding: 20px; background: rgba(15, 23, 42, 0.5); border-radius: 12px; border-left: 4px solid var(--accent-main); font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+    .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .filter-row label { color: var(--text-dim); font-size: 0.95rem; }
+    .filter-row select { padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--white); font-size: 0.95rem; min-width: 170px; }
+
+    @media (max-width: 1024px) {
+      .kpi-row { grid-template-columns: 1fr 1fr; }
+      nav { padding: 1.25rem 2.5rem; }
+      .container { padding: 40px 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-bg"></div>
+  <div class="grid-pattern"></div>
+
+  <div class="page">
+    <nav>
+      <a href="/" class="logo">
+        <div class="logo-icon">🛡</div>
+        Silent<span>Sentry</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li class="dropdown">
+          <a href="javascript:void(0)">Dashboards</a>
+          <div class="dropdown-content">
+            <a href="/Attack_Frequency_Severity">Attack Frequency & Severity</a>
+            <a href="/Sequential_Escalation">Sequential Escalation</a>
+            <a href="/Payload_Analysis_Page">Payload Analysis</a>
+            <a href="/Threat_Score_Page">Threat Score analysis</a>
+          </div>
+        </li>
+        {% if session.user_id %}
+          <li><a href="/logout">Logout</a></li>
+        {% endif %}
+        <li><a href="/login">Sign In</a></li>
+        <li><a href="/register" class="btn-cta">Sign Up</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <div class="header-area">
+        <h1>Attack Frequency & Severity</h1>
+        <p>Distribution analysis of threat volumes and their impact classifications across environmental nodes.</p>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="lbl">Total Streams</div><div class="val">{{ total_attacks }}</div></div>
+        <div class="kpi-card"><div class="lbl">Impact Score</div><div class="val">{{ avg_severity }}</div></div>
+        <div class="kpi-card"><div class="lbl">Variations</div><div class="val">{{ unique_types }}</div></div>
+        <div class="kpi-card"><div class="lbl">Health Pulse</div><div class="val">{{ uptime }}</div></div>
+      </div>
+
+      <div class="graph-grid">
+        <div class="graph-card" id="graph1">
+          <h2>Count of Attacks by Type</h2>
+          <form class="filter-row" action="{{ url_for('attack_frequency_severity') }}#graph1" method="get">
+            <label for="severity1">Filter by severity:</label>
+            <select id="severity1" name="severity1" onchange="this.form.submit()">
+              <option value="all" {% if severity1 == 'all' %}selected{% endif %}>All severities</option>
+              {% for sev in severity_options %}
+              <option value="{{ sev }}" {% if severity1 == sev %}selected{% endif %}>{{ sev|title }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="attack2" value="{{ attack2 }}">
+            <input type="hidden" name="attack3" value="{{ attack3 }}">
+            <input type="hidden" name="attack4" value="{{ attack4 }}">
+            <input type="hidden" name="severity5" value="{{ severity5 }}">
+          </form>
+          <div class="plot-container">{{ bar_html|safe }}</div>
+          <div class="conclusion">Identifies top occurring threat vectors, allowing response teams to focus hardening efforts on the most frequent entry points.</div>
+        </div>
+        <div class="graph-card" id="graph2">
+          <h2>Attack Type vs Severity</h2>
+          <form class="filter-row" action="{{ url_for('attack_frequency_severity') }}#graph2" method="get">
+            <label for="attack2">Filter by attack type:</label>
+            <select id="attack2" name="attack2" onchange="this.form.submit()">
+              <option value="all" {% if attack2 == 'all' %}selected{% endif %}>All attack types</option>
+              {% for attack in attack_options %}
+              <option value="{{ attack }}" {% if attack2 == attack %}selected{% endif %}>{{ attack }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="severity1" value="{{ severity1 }}">
+            <input type="hidden" name="attack3" value="{{ attack3 }}">
+            <input type="hidden" name="attack4" value="{{ attack4 }}">
+            <input type="hidden" name="severity5" value="{{ severity5 }}">
+          </form>
+          <div class="plot-container">{{ stacked_html|safe }}</div>
+          <div class="conclusion">Correlates attack families with their realized severity levels to highlight high-criticality recurring patterns.</div>
+        </div>
+        <div class="graph-card" id="graph3">
+          <h2>Severity Distribution</h2>
+          <form class="filter-row" action="{{ url_for('attack_frequency_severity') }}#graph3" method="get">
+            <label for="attack3">Filter by attack type:</label>
+            <select id="attack3" name="attack3" onchange="this.form.submit()">
+              <option value="all" {% if attack3 == 'all' %}selected{% endif %}>All attack types</option>
+              {% for attack in attack_options %}
+              <option value="{{ attack }}" {% if attack3 == attack %}selected{% endif %}>{{ attack }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="severity1" value="{{ severity1 }}">
+            <input type="hidden" name="attack2" value="{{ attack2 }}">
+            <input type="hidden" name="attack4" value="{{ attack4 }}">
+            <input type="hidden" name="severity5" value="{{ severity5 }}">
+          </form>
+          <div class="plot-container">{{ pie_html|safe }}</div>
+          <div class="conclusion">Provides a proportional view of the overall threat environment health across all incident records.</div>
+        </div>
+        <div class="graph-card" id="graph4">
+          <h2>Contextual Hierarchy Map</h2>
+          <form class="filter-row" action="{{ url_for('attack_frequency_severity') }}#graph4" method="get">
+            <label for="attack4">Filter by attack type:</label>
+            <select id="attack4" name="attack4" onchange="this.form.submit()">
+              <option value="all" {% if attack4 == 'all' %}selected{% endif %}>All attack types</option>
+              {% for attack in attack_options %}
+              <option value="{{ attack }}" {% if attack4 == attack %}selected{% endif %}>{{ attack }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="severity1" value="{{ severity1 }}">
+            <input type="hidden" name="attack2" value="{{ attack2 }}">
+            <input type="hidden" name="attack3" value="{{ attack3 }}">
+            <input type="hidden" name="severity5" value="{{ severity5 }}">
+          </form>
+          <div class="plot-container">{{ treemap_html|safe }}</div>
+          <div class="conclusion">Visualizes the intersection of attack types and specific environmental contexts where they occur.</div>
+        </div>
+        <div class="graph-card" id="graph5">
+          <h2>Type Proportion Density</h2>
+          <form class="filter-row" action="{{ url_for('attack_frequency_severity') }}#graph5" method="get">
+            <label for="severity5">Filter by severity:</label>
+            <select id="severity5" name="severity5" onchange="this.form.submit()">
+              <option value="all" {% if severity5 == 'all' %}selected{% endif %}>All severities</option>
+              {% for sev in severity_options %}
+              <option value="{{ sev }}" {% if severity5 == sev %}selected{% endif %}>{{ sev|title }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="severity1" value="{{ severity1 }}">
+            <input type="hidden" name="attack2" value="{{ attack2 }}">
+            <input type="hidden" name="attack3" value="{{ attack3 }}">
+            <input type="hidden" name="attack4" value="{{ attack4 }}">
+          </form>
+          <div class="plot-container">{{ donut_html|safe }}</div>
+          <div class="conclusion">Analysis of relative volume for each identified threat category within the total dataset.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
