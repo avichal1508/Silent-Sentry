@@ -10,49 +10,245 @@
     :root {
       --bg-deep:        #020617;
       --bg-surface:     #0f172a;
-      --bg-card:        #1e293b;
+      --bg-card:        rgba(30, 41, 59, 0.7);
       --accent-main:    #38bdf8;
       --accent-indigo:  #818cf8;
       --white:          #f8fafc;
       --text-dim:       #94a3b8;
-      --border:         rgba(56, 189, 248, 0.15);
+      --border:         rgba(56, 189, 248, 0.2);
       --font-display:   'Outfit', sans-serif;
       --font-body:      'Inter', sans-serif;
-      --glass:          rgba(15, 23, 42, 0.85);
+      --glass:          rgba(15, 23, 42, 0.8);
+      --glass-border:   rgba(255, 255, 255, 0.1);
     }
-    body { font-family: var(--font-body); background: var(--bg-deep); color: var(--white); overflow-x: hidden; min-height: 100vh; }
-    .hero-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 50%), var(--bg-deep); }
-    .grid-pattern { position: fixed; inset: 0; z-index: 1; opacity: 0.1; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; }
+    body { 
+      font-family: var(--font-body); 
+      background: var(--bg-deep); 
+      color: var(--white); 
+      overflow-x: hidden; 
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 35%),
+        radial-gradient(circle at 100% 100%, rgba(129, 140, 248, 0.15) 0%, transparent 35%);
+    }
+    
+    .hero-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .grid-pattern { 
+      position: fixed; inset: 0; z-index: 1; opacity: 0.05; 
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); 
+      background-size: 40px 40px; pointer-events: none; 
+    }
+
     .page { position: relative; z-index: 10; padding-bottom: 60px; }
 
     nav {
-      display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 5rem;
-      background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 1rem 5rem;
+      background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 1000;
     }
     .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--white); }
     .logo span { color: var(--accent-main); }
-    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo)); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
-    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.3s; }
+    .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s; }
     .nav-links a:hover { color: var(--accent-main); }
-    .dropdown { position: relative; }
-    .dropdown-content { position: absolute; top: 100%; left: 0; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; min-width: 240px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s; margin-top: 15px; }
-    .dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
-    .dropdown-content a { display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim) !important; transition: all 0.2s; }
-    .dropdown-content a:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main) !important; }
+    
+    .btn-cta { 
+      background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo)); 
+      color: var(--bg-deep) !important; 
+      padding: 8px 20px; 
+      border-radius: 8px; 
+      font-weight: 600 !important;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    }
 
-    .container { padding: 40px 5rem; max-width: 1200px; margin: 0 auto; }
-    .header-area { margin-bottom: 40px; }
-    .header-area h1 { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; color: var(--white); }
-    .header-area p { color: var(--text-dim); font-size: 1rem; }
+    .container { padding: 60px 5rem; max-width: 1100px; margin: 0 auto; }
+    
+    .header-area { text-align: center; margin-bottom: 50px; }
+    .header-area h1 { 
+      font-family: var(--font-display); 
+      font-size: 3rem; 
+      font-weight: 800; 
+      margin-bottom: 15px; 
+      background: linear-gradient(to right, #fff, var(--accent-main));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-area p { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
 
-    .graph-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-    .graph-card h2 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 24px; color: var(--accent-main); }
+    .main-card { 
+      background: var(--bg-card); 
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px; 
+      padding: 40px; 
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-main), transparent);
+      opacity: 0.5;
+    }
+
+    .section-title { 
+      font-family: var(--font-display); 
+      font-size: 1.5rem; 
+      margin-bottom: 30px; 
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--accent-main);
+      border-radius: 2px;
+    }
+
+    .demo-payloads {
+      margin-bottom: 25px;
+    }
+    .demo-label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      display: block;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .payload-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--accent-main);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: monospace;
+    }
+    .chip:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent-main);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1);
+    }
+    .chip:active {
+      transform: translateY(0);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      color: var(--white);
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 150px;
+      transition: all 0.3s;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: var(--accent-main);
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+    }
+
+    .analyze-btn {
+      margin-top: 25px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo));
+      color: var(--bg-deep);
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
+    }
+    .analyze-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px -5px rgba(56, 189, 248, 0.5);
+    }
+    .analyze-btn:active {
+      transform: translateY(0);
+    }
+
+    .result-container {
+      margin-top: 40px;
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .result-label {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+    .severity-badge {
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .severity-critical { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+    .severity-high { background: rgba(249, 115, 22, 0.1); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.2); }
+    .severity-medium { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
+    .severity-low { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+
+    .result-value {
+      font-size: 2.5rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+    }
 
     @media (max-width: 1024px) {
-      nav { padding: 1.25rem 2.5rem; }
+      nav { padding: 1rem 2.5rem; }
       .container { padding: 40px 2.5rem; }
+      .header-area h1 { font-size: 2.5rem; }
     }
   </style>
 </head>
@@ -69,55 +265,101 @@
       <ul class="nav-links">
         <li><a href="/">Home</a></li>
         <li><a href="/about">About</a></li>
-        <li class="dropdown">
+        <li class="dropdown" style="position: relative; cursor: pointer;">
           <a href="javascript:void(0)">Dashboards</a>
-          <div class="dropdown-content">
-            <a href="/Attack_Frequency_Severity">Attack Frequency & Severity</a>
-            <a href="/Sequential_Escalation">Sequential Escalation</a>
-            <a href="/Payload_Analysis_Page">Payload Analysis</a>
-            <a href="/Threat_Score_Page">Threat Score analysis</a>
-            <a href="/predict_payload">Predict Payload Severity</a>
+          <div class="dropdown-content" style="position: absolute; top: 100%; left: 0; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; min-width: 240px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s; margin-top: 15px;">
+            <a href="/Attack_Frequency_Severity" style="display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); text-decoration: none;">Attack Frequency & Severity</a>
+            <a href="/Sequential_Escalation" style="display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); text-decoration: none;">Sequential Escalation</a>
+            <a href="/Payload_Analysis_Page" style="display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); text-decoration: none;">Payload Analysis</a>
+            <a href="/Threat_Score_Page" style="display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); text-decoration: none;">Threat Score analysis</a>
+            <a href="/predict_payload" style="display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); text-decoration: none;">Predict Payload Severity</a>
           </div>
+          <style>
+            .dropdown:hover .dropdown-content { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
+            .dropdown-content a:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main) !important; }
+          </style>
         </li>
         {% if session.user_id %}
           <li><a href="/logout">Logout</a></li>
+        {% else %}
+          <li><a href="/login">Sign In</a></li>
+          <li><a href="/register" class="btn-cta">Sign Up</a></li>
         {% endif %}
-        <li><a href="/login">Sign In</a></li>
-        <li><a href="/register" class="btn-cta">Sign Up</a></li>
       </ul>
     </nav>
 
     <div class="container">
       <div class="header-area">
-        <h1>Predict Payload Severity</h1>
-        <p>Test arbitrary payloads against the trained Machine Learning model to evaluate their potential threat severity.</p>
+        <h1>Predict Severity</h1>
+        <p>Harness the power of AI to analyze malicious payloads. Our model evaluates patterns to determine threat levels in real-time.</p>
       </div>
 
-      <div class="graph-card">
-        <h2>Evaluation Engine</h2>
-        <form method="post" action="{{ url_for('predict_payload') }}" style="display: flex; flex-direction: column; gap: 15px;">
-          <label for="payload_text" style="color: var(--text-dim);">Enter Payload String:</label>
-          <textarea id="payload_text" name="payload_text" rows="4" style="padding: 15px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--white); font-family: monospace; resize: vertical;" required>{{ payload_text if payload_text else '' }}</textarea>
-          <button type="submit" style="align-self: flex-start; padding: 12px 24px; background: var(--accent-main); color: var(--bg-deep); font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;">Analyze Payload</button>
+      <div class="main-card">
+        <h2 class="section-title">Payload Analysis Engine</h2>
+        
+        <div class="demo-payloads">
+          <span class="demo-label">Demo Payloads (Try these)</span>
+          <div class="payload-chips">
+            <div class="chip" onclick="fillPayload('<script>alert(\'XSS\')</script>')">XSS Script</div>
+            <div class="chip" onclick="fillPayload('\' OR 1=1 --')">SQL Injection</div>
+            <div class="chip" onclick="fillPayload('../../../../etc/passwd')">Path Traversal</div>
+            <div class="chip" onclick="fillPayload('<iframe src=\'javascript:alert(1)\'></iframe>')">JS Iframe</div>
+            <div class="chip" onclick="fillPayload('http://127.0.0.1/?param=value')">path</div>
+          </div>
+        </div>
+
+        <form method="post" action="{{ url_for('predict_payload') }}">
+          <div class="input-group">
+            <textarea id="payload_text" name="payload_text" placeholder="Paste your payload here..." required>{{ payload_text if payload_text else '' }}</textarea>
+          </div>
+          <button type="submit" class="analyze-btn">
+            <span>Analyze Payload</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </button>
         </form>
 
         {% if prediction %}
-        <div style="margin-top: 30px; padding: 20px; border-radius: 12px; background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent-main);">
-          <h3 style="color: var(--white); margin-bottom: 10px;">Analysis Result</h3>
-          <p style="color: var(--text-dim); font-size: 1.1rem;">
-            Predicted Severity: 
-            <span style="font-weight: bold; color: 
-              {% if prediction|lower == 'critical' %}#ef4444
-              {% elif prediction|lower == 'high' %}#f97316
-              {% elif prediction|lower == 'medium' %}#eab308
-              {% else %}#22c55e{% endif %};">
-              {{ prediction | title }}
+        <div class="result-container">
+          <div class="result-header">
+            <span class="result-label">AI Analysis Result</span>
+            <span class="severity-badge 
+              {% if prediction|lower == 'critical' %}severity-critical
+              {% elif prediction|lower == 'high' %}severity-high
+              {% elif prediction|lower == 'medium' %}severity-medium
+              {% else %}severity-low{% endif %}">
+              {{ prediction | upper }}
             </span>
+          </div>
+          <div class="result-value" style="color: 
+            {% if prediction|lower == 'critical' %}#ef4444
+            {% elif prediction|lower == 'high' %}#f97316
+            {% elif prediction|lower == 'medium' %}#eab308
+            {% else %}#22c55e{% endif %};">
+            {{ prediction | title }} Risk
+          </div>
+          <p style="color: var(--text-dim); margin-top: 15px; font-size: 0.95rem;">
+            The model has identified patterns consistent with <strong>{{ prediction | lower }}</strong> severity threats. 
+            Immediate review of the input source and sanitation logic is recommended.
           </p>
         </div>
         {% endif %}
       </div>
     </div>
   </div>
+
+  <script>
+    function fillPayload(text) {
+      const textarea = document.getElementById('payload_text');
+      textarea.value = text;
+      textarea.focus();
+      
+      // Add a subtle highlight effect
+      textarea.style.borderColor = 'var(--accent-main)';
+      setTimeout(() => {
+        textarea.style.borderColor = 'var(--glass-border)';
+      }, 500);
+    }
+  </script>
 </body>
 </html>
+

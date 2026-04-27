@@ -4,23 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Silent Sentry – Enterprise Cyber Protection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
       --bg-deep:        #020617;
       --bg-surface:     #0f172a;
-      --bg-card:        #1e293b;
+      --bg-card:        rgba(30, 41, 59, 0.7);
       --accent-main:    #38bdf8;
       --accent-glow:    #0ea5e9;
       --accent-indigo:  #818cf8;
       --white:          #f8fafc;
       --text-dim:       #94a3b8;
-      --border:         rgba(56, 189, 248, 0.15);
+      --border:         rgba(56, 189, 248, 0.2);
+      --glass-border:   rgba(255, 255, 255, 0.1);
       --font-display:   'Outfit', sans-serif;
       --font-body:      'Inter', sans-serif;
-      --glass:          rgba(15, 23, 42, 0.85);
+      --font-mono:      'Fira Code', monospace;
+      --glass:          rgba(15, 23, 42, 0.8);
     }
 
     html { scroll-behavior: smooth; }
@@ -39,251 +40,234 @@
       position: fixed;
       inset: 0;
       z-index: 0;
-      background: 
-        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 20% 80%, rgba(129, 140, 248, 0.08) 0%, transparent 50%),
-        var(--bg-deep);
+      background: var(--bg-deep);
+      overflow: hidden;
     }
-    .grid-pattern {
-      position: fixed;
+    
+    .animated-blobs {
+      position: absolute;
       inset: 0;
       z-index: 1;
+      filter: blur(80px);
+      opacity: 0.4;
+    }
+    
+    .blob {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: var(--accent-main);
+      animation: float 20s infinite alternate;
+    }
+    
+    .blob-1 {
+      top: -100px;
+      left: -100px;
+      background: var(--accent-main);
+      opacity: 0.6;
+    }
+    
+    .blob-2 {
+      bottom: -100px;
+      right: -100px;
+      background: var(--accent-indigo);
+      opacity: 0.4;
+      animation-delay: -5s;
+      animation-duration: 25s;
+    }
+    
+    .blob-3 {
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: #f59e0b;
       opacity: 0.2;
-      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 50px 50px;
-      pointer-events: none;
-      mask-image: radial-gradient(circle, black, transparent 80%);
+      animation-delay: -10s;
+      animation-duration: 30s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, 100px) scale(1.1); }
+      66% { transform: translate(-50px, 200px) scale(0.9); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    .grid-pattern { 
+      position: fixed; inset: 0; z-index: 2; opacity: 0.05; 
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); 
+      background-size: 40px 40px; pointer-events: none; 
     }
 
     .page { position: relative; z-index: 10; }
 
-    /* ──── NAVBAR ──── */
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 5rem;
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between; padding: 1rem 5rem;
+      background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 1000;
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: var(--white);
-      letter-spacing: -0.5px;
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
+      font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--white);
     }
     .logo span { color: var(--accent-main); }
-    
     .logo-icon {
-      width: 40px; height: 40px;
+      width: 36px; height: 36px;
       background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-      align-items: center;
-    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
     .nav-links a {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
+      color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: all 0.3s;
     }
     .nav-links a:hover { color: var(--accent-main); }
     
-    /* Dropdown Fix & Professionalism */
-    .dropdown { position: relative; }
-    .dropdown > a { display: flex; align-items: center; gap: 6px; }
-    .dropdown > a::after { content: '▼'; font-size: 0.6rem; transform: scaleY(0.6); }
-
+    .dropdown { position: relative; cursor: pointer; }
     .dropdown-content {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      min-width: 240px;
-      padding: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 15px;
+      position: absolute; top: 100%; left: 0; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: 12px; min-width: 260px;
+      padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      opacity: 0; visibility: hidden; transform: translateY(10px);
+      transition: all 0.3s; margin-top: 15px;
     }
-
-    .dropdown:hover .dropdown-content {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
+    .dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
     .dropdown-content a {
-      display: block;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: var(--text-dim) !important;
-      transition: all 0.2s;
+      display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.85rem;
+      color: var(--text-dim) !important; text-decoration: none; transition: all 0.2s;
     }
-    .dropdown-content a:hover {
-      background: rgba(56, 189, 248, 0.1);
-      color: var(--accent-main) !important;
-      padding-left: 20px;
-    }
+    .dropdown-content a:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main) !important; }
 
     .btn-cta {
-      background: var(--accent-main);
-      color: var(--bg-deep) !important;
-      padding: 0.75rem 1.75rem;
-      border-radius: 50px;
-      font-weight: 700;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+      background: linear-gradient(135deg, var(--accent-main), var(--accent-indigo));
+      color: var(--bg-deep) !important; padding: 0.75rem 1.75rem; border-radius: 50px;
+      font-weight: 700; font-size: 0.9rem; transition: all 0.3s;
     }
-    .btn-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
-      background: var(--white);
-    }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); filter: brightness(1.1); }
 
     /* ──── HERO ──── */
     .hero {
-      padding: 100px 5rem 60px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      align-items: center;
-      gap: 60px;
+      padding: 120px 5rem 80px; display: grid; grid-template-columns: 1.2fr 1fr;
+      align-items: center; gap: 80px; max-width: 1400px; margin: 0 auto;
     }
     .hero-content h1 {
-      font-family: var(--font-display);
-      font-size: 4.5rem;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-      letter-spacing: -2px;
+      font-family: var(--font-display); font-size: 5rem; font-weight: 800;
+      line-height: 1; margin-bottom: 1.5rem; letter-spacing: -0.04em;
     }
     .hero-content h1 span {
-      background: linear-gradient(to right, var(--accent-main), var(--accent-indigo));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background: linear-gradient(to right, var(--accent-main), #fff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .hero-content p {
-      font-size: 1.2rem;
-      color: var(--text-dim);
-      line-height: 1.6;
-      margin-bottom: 2.5rem;
-      max-width: 540px;
+      font-size: 1.25rem; color: var(--text-dim); line-height: 1.6;
+      margin-bottom: 3rem; max-width: 600px; font-weight: 300;
     }
 
     .hero-stats {
-      display: flex;
-      gap: 40px;
-      margin-top: 50px;
-      padding-top: 40px;
+      display: flex; gap: 48px; padding-top: 48px;
       border-top: 1px solid var(--border);
     }
-    .stat-box { display: flex; flex-direction: column; gap: 4px; }
-    .stat-box .val { font-size: 1.75rem; font-weight: 700; font-family: var(--font-display); color: var(--accent-main); }
-    .stat-box .lbl { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+    .stat-box { display: flex; flex-direction: column; gap: 8px; }
+    .stat-box .val { font-size: 2.25rem; font-weight: 800; font-family: var(--font-display); color: var(--white); }
+    .stat-box .lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent-main); font-weight: 700; }
 
-    /* ──── DASHBOARD PREVIEW CARDS ──── */
-    .hero-visual {
-      position: relative;
-      display: flex; align-items: center; justify-content: center;
-    }
+    /* ──── HERO VISUAL ──── */
+    .hero-visual { position: relative; perspective: 1000px; }
     .visual-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 30px;
-      width: 100%;
-      height: 480px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      display: flex; flex-direction: column; gap: 20px;
-      position: relative;
-      overflow: hidden;
+      background: var(--bg-card); backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); border-radius: 24px;
+      padding: 32px; width: 100%; height: 500px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; gap: 24px;
+      transform: rotateY(-10deg) rotateX(5deg);
+      transition: transform 0.5s ease;
     }
+    .hero-visual:hover .visual-card { transform: rotateY(0deg) rotateX(0deg); }
+
     .visual-header { display: flex; justify-content: space-between; align-items: center; }
-    .dot-row { display: flex; gap: 6px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
-    .dot:nth-child(1) { background: #ef4444; }
-    .dot:nth-child(2) { background: #f59e0b; }
-    .dot:nth-child(3) { background: #10b981; }
+    .dot-row { display: flex; gap: 8px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--glass-border); }
+    .dot-red { background: #fb7185; box-shadow: 0 0 10px #fb7185; }
+    .dot-yellow { background: #fbbf24; }
+    .dot-green { background: #34d399; }
 
     .chart-mock {
-      flex: 1;
-      background: rgba(15, 23, 42, 0.4);
-      border-radius: 12px;
-      position: relative;
-      border: 1px dashed var(--border);
-      display: flex; align-items: flex-end; gap: 10px; padding: 20px;
+      flex: 1; background: rgba(0,0,0,0.3); border-radius: 16px;
+      border: 1px solid var(--glass-border); display: flex; align-items: flex-end;
+      gap: 12px; padding: 32px; position: relative; overflow: hidden;
     }
-    .bar { flex: 1; background: var(--accent-main); border-radius: 4px; transition: height 1s; animation: grow 1.5s ease-out; }
+    .chart-mock::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(transparent, rgba(56, 189, 248, 0.05));
+      pointer-events: none;
+    }
+    .bar {
+      flex: 1; background: linear-gradient(to top, var(--accent-indigo), var(--accent-main));
+      border-radius: 4px 4px 0 0; min-height: 20%;
+      animation: grow 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     @keyframes grow { from { height: 0; } }
 
-    /* ──── FEATURE SECTION ──── */
+    .status-badge {
+      display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+      font-size: 0.8rem; color: var(--accent-main); font-weight: 600;
+    }
+    .pulse { width: 8px; height: 8px; background: var(--accent-main); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+
+    /* ──── FEATURES ──── */
     .features {
-      padding: 100px 5rem;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
+      padding: 100px 5rem; display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px; max-width: 1400px; margin: 0 auto;
     }
     .feature-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px;
-      transition: all 0.3s;
+      background: var(--bg-card); backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border); border-radius: 24px;
+      padding: 48px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative; overflow: hidden;
     }
     .feature-card:hover {
-      border-color: var(--accent-main);
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.1);
+      transform: translateY(-10px); border-color: var(--accent-main);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
     .feature-card i {
-      font-size: 1.5rem; color: var(--accent-main); margin-bottom: 20px; display: block;
+      font-size: 2.5rem; display: block; margin-bottom: 24px;
+      filter: drop-shadow(0 0 10px var(--accent-main));
     }
-    .feature-card h3 { font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 12px; }
-    .feature-card p { font-size: 0.95rem; line-height: 1.6; color: var(--text-dim); }
+    .feature-card h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; }
+    .feature-card p { font-size: 1rem; line-height: 1.7; color: var(--text-dim); }
 
     footer {
-      padding: 40px 5rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 0.9rem;
+      padding: 60px 5rem; border-top: 1px solid var(--border);
+      text-align: center; color: var(--text-dim); font-size: 0.9rem;
     }
 
-    @media (max-width: 1024px) {
-      nav { padding: 1.25rem 2.5rem; }
-      .hero { grid-template-columns: 1fr; padding: 60px 2.5rem; text-align: center; }
-      .hero-content h1 { font-size: 3rem; }
-      .hero-content p { margin: 0 auto 2.5rem; }
+    @media (max-width: 1200px) {
+      .hero { grid-template-columns: 1fr; text-align: center; padding-top: 60px; }
+      .hero-content h1 { font-size: 4rem; }
+      .hero-content p { margin: 0 auto 3rem; }
       .hero-stats { justify-content: center; }
-      .features { grid-template-columns: 1fr; padding: 60px 2.5rem; }
+      .features { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="hero-bg"></div>
+  <div class="hero-bg">
+    <div class="animated-blobs">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+  </div>
   <div class="grid-pattern"></div>
 
   <div class="page">
@@ -307,30 +291,30 @@
         </li>
         {% if session.user_id %}
           <li><a href="/logout">Logout</a></li>
+        {% else %}
+          <li><a href="/login">Sign In</a></li>
+          <li><a href="/register" class="btn-cta">Sign Up</a></li>
         {% endif %}
-        <li><a href="/login">Sign In</a></li>
-        <li><a href="/register" class="btn-cta">Sign Up</a></li>
-
       </ul>
     </nav>
 
     <section class="hero">
       <div class="hero-content">
-        <h1>Enterprise Grade <span>Threat Intelligence</span></h1>
-        <p>Advanced security analytics powered by machine learning to shield your digital infrastructure from evolving global threats. Real-time monitoring, deep payload inspection, and predictive severity scoring.</p>
+        <h1>Autonomous <span>Threat</span> Defense</h1>
+        <p>Next-generation security intelligence engineered to neutralize evolving global exploits. Silent Sentry provides real-time neural analysis and structural payload decomposition for total infrastructure awareness.</p>
         
         <div class="hero-stats">
           <div class="stat-box">
             <span class="val">{{ uptime }}</span>
-            <span class="lbl">Availability</span>
+            <span class="lbl">SLA Status</span>
           </div>
           <div class="stat-box">
             <span class="val">{{ total_attacks }}</span>
-            <span class="lbl">Nodes Protected</span>
+            <span class="lbl">Active Nodes</span>
           </div>
           <div class="stat-box">
             <span class="val">{{ unique_types }}</span>
-            <span class="lbl">Threat Vectors</span>
+            <span class="lbl">Vector Families</span>
           </div>
         </div>
       </div>
@@ -338,19 +322,26 @@
       <div class="hero-visual">
         <div class="visual-card">
           <div class="visual-header">
-            <div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            <div style="font-size: 0.75rem; color: var(--text-dim);">LIVE_THREAT_FEED</div>
+            <div class="dot-row">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.1em;">SYSTEM_ID: SENTRY-X1</div>
           </div>
           <div class="chart-mock">
-            <div class="bar" style="height: 40%;"></div>
-            <div class="bar" style="height: 70%;"></div>
-            <div class="bar" style="height: 50%;"></div>
-            <div class="bar" style="height: 90%;"></div>
-            <div class="bar" style="height: 60%;"></div>
-            <div class="bar" style="height: 30%;"></div>
-            <div class="bar" style="height: 80%;"></div>
+            <div class="bar" style="height: 45%;"></div>
+            <div class="bar" style="height: 75%;"></div>
+            <div class="bar" style="height: 55%;"></div>
+            <div class="bar" style="height: 95%;"></div>
+            <div class="bar" style="height: 65%;"></div>
+            <div class="bar" style="height: 35%;"></div>
+            <div class="bar" style="height: 85%;"></div>
           </div>
-          <div style="font-size: 0.8rem; color: var(--accent-main); font-weight: 600;">STATUS: ACTIVE PROTECTION ENABLED</div>
+          <div class="status-badge">
+            <div class="pulse"></div>
+            ACTIVE_SHIELD: 98.4% EFFICIENCY
+          </div>
         </div>
       </div>
     </section>
@@ -358,33 +349,35 @@
     <section class="features">
       <div class="feature-card">
         <i>🛡</i>
-        <h3>Proactive Defense</h3>
-        <p>Identify and neutralize potential threats before they penetrate your network perimeter using advanced pattern recognition.</p>
+        <h3>Proactive Neutralization</h3>
+        <p>Autonomous defense protocols that intercept and quarantine sophisticated attack vectors before they reach your internal network segments.</p>
       </div>
       <div class="feature-card">
         <i>📊</i>
-        <h3>Deep Analytics</h3>
-        <p>Visualize complex attack sequences and payload distributions with high-fidelity, interactive data dashboards.</p>
+        <h3>Neural Analytics</h3>
+        <p>Deep structural inspection of binary payloads using advanced machine learning to identify zero-day vulnerabilities in milliseconds.</p>
       </div>
       <div class="feature-card">
         <i>⚡</i>
-        <h3>Smart Scoring</h3>
-        <p>Automated threat severity scoring helps your team prioritize critical incidents and response strategies effectively.</p>
+        <h3>Contextual Intelligence</h3>
+        <p>Dynamic threat scoring that integrates environment telemetry with global attack patterns for precise risk assessment.</p>
       </div>
     </section>
 
     <footer>
-      <p>&copy; 2026 Silent Sentry Enterprise Security. All rights reserved.</p>
+      <p>&copy; 2026 Silent Sentry Intelligence Systems. Built for Total Security.</p>
     </footer>
   </div>
 
   <script>
-    // Robust dropdown handling if needed, but current CSS is quite stable.
-    // Ensure dropdown stays open when interacting with it.
-    const dropdown = document.querySelector('.dropdown');
-    const content = document.querySelector('.dropdown-content');
-    
-    // Smooth transitions are handled by CSS, but you could add click-to-open here if mobile experience is preferred.
+    // Parallax effect on mouse move
+    document.addEventListener('mousemove', (e) => {
+      const card = document.querySelector('.visual-card');
+      if (!card) return;
+      const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+      const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+      card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    });
   </script>
 </body>
 </html>
