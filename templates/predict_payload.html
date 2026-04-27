@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us – Silent Sentry</title>
+  <title>Predict Payload Severity – Silent Sentry</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,7 +23,7 @@
     body { font-family: var(--font-body); background: var(--bg-deep); color: var(--white); overflow-x: hidden; min-height: 100vh; }
     .hero-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 50%), var(--bg-deep); }
     .grid-pattern { position: fixed; inset: 0; z-index: 1; opacity: 0.1; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; }
-    .page { position: relative; z-index: 10; }
+    .page { position: relative; z-index: 10; padding-bottom: 60px; }
 
     nav {
       display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 5rem;
@@ -42,31 +42,17 @@
     .dropdown-content a { display: block; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim) !important; transition: all 0.2s; }
     .dropdown-content a:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main) !important; }
 
-    .btn-cta { background: var(--accent-main); color: var(--bg-deep) !important; padding: 0.75rem 1.75rem; border-radius: 50px; font-weight: 700; }
+    .container { padding: 40px 5rem; max-width: 1200px; margin: 0 auto; }
+    .header-area { margin-bottom: 40px; }
+    .header-area h1 { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; color: var(--white); }
+    .header-area p { color: var(--text-dim); font-size: 1rem; }
 
-    .section { padding: 100px 5rem; }
-    .header-center { text-align: center; max-width: 800px; margin: 0 auto 60px; }
-    .header-center h1 { font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; }
-    .header-center p { font-size: 1.1rem; color: var(--text-dim); line-height: 1.7; }
-
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; transition: all 0.3s; }
-    .card h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 15px; color: var(--accent-main); }
-    .card p { font-size: 0.95rem; line-height: 1.6; color: var(--text-dim); }
-
-    .stats { display: flex; justify-content: space-around; padding: 60px; background: rgba(30, 41, 59, 0.4); border-radius: 30px; margin-top: 60px; border: 1px solid var(--border); }
-    .stat-item { text-align: center; }
-    .stat-val { font-family: var(--font-display); font-size: 3rem; font-weight: 800; color: var(--accent-main); }
-    .stat-lbl { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; margin-top: 10px; }
-
-    footer { padding: 40px 5rem; text-align: center; color: var(--text-dim); border-top: 1px solid var(--border); }
+    .graph-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .graph-card h2 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 24px; color: var(--accent-main); }
 
     @media (max-width: 1024px) {
-      .grid { grid-template-columns: 1fr; }
       nav { padding: 1.25rem 2.5rem; }
-      .nav-links { display: none; }
-      .section { padding: 60px 2.5rem; }
-      .header-center h1 { font-size: 2.5rem; }
+      .container { padding: 40px 2.5rem; }
     }
   </style>
 </head>
@@ -98,50 +84,40 @@
         {% endif %}
         <li><a href="/login">Sign In</a></li>
         <li><a href="/register" class="btn-cta">Sign Up</a></li>
-
       </ul>
     </nav>
 
-    <section class="section">
-      <div class="header-center">
-        <h1>Global <span>Protection</span> Legacy</h1>
-        <p>Silent Sentry was founded on the principle that digital safety should be proactive, not reactive. We combine decades of cybersecurity expertise with cutting edge artificial intelligence to deliver a shield that never sleeps.</p>
+    <div class="container">
+      <div class="header-area">
+        <h1>Predict Payload Severity</h1>
+        <p>Test arbitrary payloads against the trained Machine Learning model to evaluate their potential threat severity.</p>
       </div>
 
-      <div class="grid">
-        <div class="card">
-          <h3>Our Mission</h3>
-          <p>To provide organizations with a resilient and intelligent security network that neutralizes malicious activity with zero friction.</p>
-        </div>
-        <div class="card">
-          <h3>Our Vision</h3>
-          <p>We envision a secure digital future where every data point is protected by predictive threat analysis and automated defense.</p>
-        </div>
-        <div class="card">
-          <h3>Our Technology</h3>
-          <p>Leveraging high-fidelity datasets and proprietary machine learning models to identify zero-day vulnerabilities in real-time.</p>
-        </div>
-      </div>
+      <div class="graph-card">
+        <h2>Evaluation Engine</h2>
+        <form method="post" action="{{ url_for('predict_payload') }}" style="display: flex; flex-direction: column; gap: 15px;">
+          <label for="payload_text" style="color: var(--text-dim);">Enter Payload String:</label>
+          <textarea id="payload_text" name="payload_text" rows="4" style="padding: 15px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--white); font-family: monospace; resize: vertical;" required>{{ payload_text if payload_text else '' }}</textarea>
+          <button type="submit" style="align-self: flex-start; padding: 12px 24px; background: var(--accent-main); color: var(--bg-deep); font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;">Analyze Payload</button>
+        </form>
 
-      <div class="stats">
-        <div class="stat-item">
-          <div class="stat-val">{{ uptime }}</div>
-          <div class="stat-lbl">Global Availability</div>
+        {% if prediction %}
+        <div style="margin-top: 30px; padding: 20px; border-radius: 12px; background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent-main);">
+          <h3 style="color: var(--white); margin-bottom: 10px;">Analysis Result</h3>
+          <p style="color: var(--text-dim); font-size: 1.1rem;">
+            Predicted Severity: 
+            <span style="font-weight: bold; color: 
+              {% if prediction|lower == 'critical' %}#ef4444
+              {% elif prediction|lower == 'high' %}#f97316
+              {% elif prediction|lower == 'medium' %}#eab308
+              {% else %}#22c55e{% endif %};">
+              {{ prediction | title }}
+            </span>
+          </p>
         </div>
-        <div class="stat-item">
-          <div class="stat-val">{{ total_attacks }}</div>
-          <div class="stat-lbl">Incidents Blocked</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-val">{{ unique_types }}</div>
-          <div class="stat-lbl">Vector Scans</div>
-        </div>
+        {% endif %}
       </div>
-    </section>
-
-    <footer>
-      <p>&copy; 2026 Silent Sentry Enterprise Security. All rights reserved.</p>
-    </footer>
+    </div>
   </div>
 </body>
 </html>

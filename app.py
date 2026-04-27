@@ -380,7 +380,18 @@ def threat_score():
         severity5=severity5,
     )
 
-
+@app.route('/predict_payload', methods=['GET', 'POST'])
+@login_required
+def predict_payload():
+    prediction = None
+    payload_text = ""
+    if request.method == 'POST':
+        payload_text = request.form.get('payload_text', '')
+        if payload_text:
+            X_new = vectorizer.transform([payload_text])
+            pred_encoded = model.predict(X_new)
+            prediction = label_encoder.inverse_transform(pred_encoded)[0]
+    return render_template('predict_payload.html', prediction=prediction, payload_text=payload_text)
 
 if __name__ == '__main__':
     app.run(debug=True)
