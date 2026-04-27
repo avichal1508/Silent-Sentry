@@ -8,10 +8,16 @@ from wordcloud import WordCloud
 import io
 import base64
 from functools import wraps
+import pickle 
 
 # Load and clean dataset
 df = pd.read_json("dataset.jsonl")  
-
+with open("payload_model.pkl", "rb") as f:
+    model=pickle.load(f)
+with open("vectorizer.pkl", "rb") as f:
+    vectorizer=pickle.load(f)
+with open("label_encoder.pkl", "rb") as f:
+    label_encoder=pickle.load(f)
 # Data cleaning logic
 missing_percentages = (df.isnull().sum() / len(df)) * 100
 cols_to_drop = missing_percentages[missing_percentages > 70].index
